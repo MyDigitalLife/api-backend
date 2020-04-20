@@ -12,5 +12,7 @@ jobs:
       - uses: actions/setup-go@v2
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
+        with:
+          args: ./...
       - name: Test
         run: docker run --rm -v $(pwd):/app -w /app golangci/golangci-lint:v1.24.0 golangci-lint run -v
