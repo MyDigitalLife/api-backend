@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"errors"
+	"log"
 	"math"
 )
 
@@ -112,9 +113,18 @@ type TemporaryContactKey struct {
 // contact number.
 func (tck *TemporaryContactKey) Ratchet() (*TemporaryContactKey, error) {
 	nextHash := sha256.New()
-	nextHash.Write([]byte(HTCKDomainSep))
-	nextHash.Write(tck.RVK)
-	nextHash.Write(tck.TCKBytes[:])
+	_, err := nextHash.Write([]byte(HTCKDomainSep))
+	if err != nil {
+		log.Fatal("Could not write hash (HTCKDomainSep)")
+	}
+	_, err = nextHash.Write(tck.RVK)
+	if err != nil {
+		log.Fatal("Could not write hash (TVK)")
+	}
+	_, err = nextHash.Write(tck.TCKBytes[:])
+	if err != nil {
+		log.Fatal("Could not write hash (TCK)")
+	}
 
 	if tck.Index == math.MaxUint16 {
 		return nil, errors.New("rak should be rotated")

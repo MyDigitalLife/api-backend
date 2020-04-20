@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ito-org/go-backend/tcn"
 	"github.com/jmoiron/sqlx"
@@ -20,7 +21,7 @@ func NewDBConnection(dbHost, dbUser, dbPassword, dbName string) (*DBConnection, 
 
 	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
-		fmt.Printf("Failed to connect to Postgres database: %s\n", err.Error())
+		log.Printf("Failed to connect to Postgres database: %s\n", err.Error())
 		return nil, err
 	}
 	return &DBConnection{db}, err
@@ -44,7 +45,7 @@ func (db *DBConnection) insertMemo(memo *tcn.Memo) (uint64, error) {
 		memo.Type,
 		memo.Data[:],
 	).Scan(&newID); err != nil {
-		fmt.Sprintf("Failed to insert memo into database: %s\n", err.Error())
+		log.Printf("Failed to insert memo into database: %s\n", err.Error())
 		return 0, err
 	}
 	return newID, nil
