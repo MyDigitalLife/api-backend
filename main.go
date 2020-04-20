@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -10,7 +11,10 @@ import (
 
 func readPostgresSettings(useEnvFile bool) (dbName, dbUser, dbPassword string) {
 	if useEnvFile {
-		godotenv.Load()
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 
 	dbName = os.Getenv("POSTGRES_DB")
@@ -68,6 +72,6 @@ func main() {
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err.Error())
 	}
 }
